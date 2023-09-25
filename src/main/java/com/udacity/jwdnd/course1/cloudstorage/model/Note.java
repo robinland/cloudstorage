@@ -4,7 +4,7 @@ public class Note {
 
     private int noteId;
     private String noteTitle;
-    private String nodeDescription;
+    private String noteDescription;
     private int userId;
 
     public int getNoteId() {
@@ -23,12 +23,12 @@ public class Note {
         this.noteTitle = noteTitle;
     }
 
-    public String getNodeDescription() {
-        return nodeDescription;
+    public String getNoteDescription() {
+        return noteDescription;
     }
 
-    public void setNodeDescription(String nodeDescription) {
-        this.nodeDescription = nodeDescription;
+    public void setNoteDescription(String noteDescription) {
+        this.noteDescription = noteDescription;
     }
 
     public int getUserId() {
