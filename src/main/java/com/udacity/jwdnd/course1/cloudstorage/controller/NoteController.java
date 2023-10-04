@@ -10,9 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/notes")
 public class NoteController {
 
     private NoteService noteService;
@@ -24,6 +25,7 @@ public class NoteController {
     }
 
     @PostMapping
+    @RequestMapping("/notes")
     public String addNote(Authentication authentication, Note note, Model model) throws Exception {
         String userName = authentication.getName();
         User user = userService.getUser(userName);
@@ -33,7 +35,19 @@ public class NoteController {
             note.setUserId(user.getUserId());
             noteService.addNote(note);
         }
-
-        return "home";
+        return "redirect:/result?success";
     }
+
+    @GetMapping
+    @RequestMapping("/notes/delete")
+    public String removeNote(@RequestParam("id") int noteId, RedirectAttributes redirectAttributes){
+        if(noteId > 0){
+            noteService.deleteNote(noteId);
+            return "redirect:/result?success";
+        }
+        redirectAttributes.addAttribute("error", "Exception to delete the note. Note ID is not available");
+        return "redirect:/result?error";
+    }
+
+
 }

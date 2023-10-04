@@ -32,7 +32,7 @@ public class NoteService {
         noteMapper.update(note);
     }
 
-    public void deleteNote(Note note){
-        noteMapper.delete(note.getNoteId());
+    public void deleteNote(int noteId){
+        noteMapper.delete(noteId);
     }
 }
