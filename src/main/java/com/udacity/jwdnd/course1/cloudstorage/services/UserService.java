@@ -35,4 +35,12 @@ public class UserService {
         return false;
     }
 
+    public User getUser(String userName) throws Exception{
+        User user = userMapper.getUser(userName);
+        if(user == null){
+            throw new Exception("User name not found");
+        }
+        return user;
+    }
+
 }
