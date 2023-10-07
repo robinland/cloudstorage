@@ -19,7 +19,7 @@ public class SignUpPage {
     @FindBy(id="inputPassword")
     private WebElement inputPassword;
 
-    @FindBy(id="submit-button")
+    @FindBy(id="signupButton")
     private WebElement submitButton;
 
     public SignUpPage(WebDriver driver){

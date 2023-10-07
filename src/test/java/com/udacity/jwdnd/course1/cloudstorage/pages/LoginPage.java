@@ -14,7 +14,7 @@ public class LoginPage {
     private WebElement inputPassword;
 
 
-    @FindBy(id = "submit-button")
+    @FindBy(id = "login-button")
     private WebElement submitButton;
 
     public LoginPage(WebDriver driver){
