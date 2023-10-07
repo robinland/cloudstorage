@@ -23,6 +23,11 @@ public class FileService {
         return lsFiles;
     }
 
+    public File getFileById(int fileId){
+        return fileMapper.getFileById(fileId);
+    }
+
+
     public void addFile(File file){
         fileMapper.insert(file);
     }
@@ -31,8 +36,8 @@ public class FileService {
         fileMapper.updateFile(file);
     }
 
-    public void deleteFile(File file){
-        fileMapper.deleteFile(file.getFileName());
+    public void deleteFile(int fileId){
+        fileMapper.deleteFile(fileId);
     }
 
 

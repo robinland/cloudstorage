@@ -11,6 +11,8 @@ public class File {
     private int userId;
     private byte[] fileData;
 
+    private String dataURL;
+
     public int getFileId() {
         return fileId;
     }
@@ -57,5 +59,13 @@ public class File {
 
     public void setFileData(byte[] fileData) {
         this.fileData = fileData;
+    }
+
+    public String getDataURL() {
+        return dataURL;
+    }
+
+    public void setDataURL(String dataURL) {
+        this.dataURL = dataURL;
     }
 }

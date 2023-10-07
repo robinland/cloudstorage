@@ -51,10 +51,10 @@
                         <tbody>
                         <tr th:each="file: ${files}">
                             <td>
-                                <a th:href="${file.dataURL}" th:download="${file.filename}" class="btn btn-success">Download</a>
-                                <a th:href="@{/files/delete(id=${file.fileid})}" class="btn btn-danger">Delete</a>
+                                <a th:href="@{/files/download(id=${file.fileId})}" th:download="${file.fileName}" class="btn btn-success">Download</a>
+                                <a th:href="@{/files/delete(id=${file.fileId})}" class="btn btn-danger">Delete</a>
                             </td>
-                            <th scope="row" th:text="${file.filename}"></th>
+                            <th scope="row" th:text="${file.fileName}"></th>
                         </tr>
                         </tbody>
                     </table>
