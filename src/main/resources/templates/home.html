@@ -35,7 +35,7 @@
                                 <input type="file" class="form-control-file" id="fileUpload" name="fileUpload">
                             </div>
                             <div class="col-sm-4">
-                                <button type="submit" class="btn btn-dark">Upload</button>
+                                <button id="uploadButton" type="submit" class="btn btn-dark">Upload</button>
                             </div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
                                 <button name = "edit" th:onclick="javascript:showNoteModal([[${note}]])" type="button" class="btn btn-success">Edit</button>
                                 <a name = "delete" th:href="@{/notes/delete(id=${note.noteId})}" class="btn btn-danger">Delete</a>
                             </td>
-                            <th scope="row" th:text="${note.noteTitle}"></th>
+                            <th scope="row" id="note-title-data" th:text="${note.noteTitle}"></th>
                             <td th:text="${note.noteDescription}"></td>
                         </tr>
                         </tbody>

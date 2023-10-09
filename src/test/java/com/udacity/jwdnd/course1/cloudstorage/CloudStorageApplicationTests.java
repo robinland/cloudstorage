@@ -200,6 +200,85 @@ class CloudStorageApplicationTests {
 
 	}
 
+	@Test
+	public void testUserSignupLoginLogout() throws InterruptedException {
+		// signup the user
+		doMockSignUp("test","test","test","test");
+
+		// login the user
+		doLogIn("test", "test");
+
+		// logout
+		WebElement logoutButton= driver.findElement(By.id("logout"));
+		logoutButton.click();
+
+		Assertions.assertFalse(driver.getTitle().equals("Home"));
+		Assertions.assertEquals("Login", driver.getTitle());
+
+		Thread.sleep(3000);
+
+	}
+
+	@Test
+	public void createNote() throws InterruptedException {
+		// signup the user
+		doMockSignUp("Maia","Test","tester","123");
+
+		// login the user
+		doLogIn("tester", "123");
+
+		// go to note-tab
+		WebElement notesTab= driver.findElement(By.id("nav-notes-tab"));
+		notesTab.click();
+
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		// verify note-tab appears
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes")));
+		Assertions.assertTrue(driver.findElement(By.id("nav-notes")).isDisplayed());
+
+		// press on add note button
+		WebElement addNoteButton= driver.findElement(By.id("newnote"));
+		addNoteButton.click();
+
+		// Fill out the note
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+		WebElement inputTitle = driver.findElement(By.id("note-title"));
+		inputTitle.click();
+		inputTitle.sendKeys("Test Note");
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-description")));
+		WebElement inputDescription = driver.findElement(By.id("note-description"));
+		inputDescription.click();
+		inputDescription.sendKeys("testing a note ...");
+
+		// Attempt ot submit the note
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("save-changes")));
+		WebElement submitNote = driver.findElement(By.id("save-changes"));
+		submitNote.click();
+
+		// Redirect to home page & press on notes tab
+		redirectToNotesTab();
+
+		// Check if the note appears
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("userTable")));
+		Assertions.assertTrue(driver.findElement(By.id("note-title-data")).getText().contains("Test Note"));
+
+
+		Thread.sleep(3000);
+
+	}
+
+	public void redirectToNotesTab(){
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		driver.get("http://localhost:" + this.port + "/home");
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+		driver.findElement(By.id("nav-notes-tab")).click();
+	}
+
+
 
 
 }
