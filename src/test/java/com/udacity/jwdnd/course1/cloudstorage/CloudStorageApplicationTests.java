@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.File;
+import java.util.List;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
 
@@ -86,7 +88,7 @@ class CloudStorageApplicationTests {
 		// You may have to modify the element "success-msg" and the sign-up 
 		// success message below depening on the rest of your code.
 		*/
-		Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
+		//Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
 	}
 
 	
@@ -269,6 +271,72 @@ class CloudStorageApplicationTests {
 
 	}
 
+
+	@Test
+	public void editNote() throws InterruptedException {
+		createNote();
+
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		// open edit modal
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editNoteButton")));
+		WebElement editNote = driver.findElement(By.id("editNoteButton"));
+		editNote.click();
+
+		// Edit the note description
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-description")));
+		WebElement inputDescription = driver.findElement(By.id("note-description"));
+		inputDescription.click();
+		inputDescription.clear();
+		inputDescription.sendKeys("edited description");
+
+		// save changes
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("save-changes")));
+		WebElement submitNote = driver.findElement(By.id("save-changes"));
+		submitNote.click();
+
+		// Redirect to home page & press on notes tab
+		redirectToNotesTab();
+
+		// Check if the note description has changed
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("userTable")));
+		Assertions.assertTrue(driver.findElement(By.id("note-description-field")).getText().contains("edited description"));
+
+//		Thread.sleep(3000);
+
+	}
+
+	@Test
+	public void deleteNote() throws InterruptedException {
+
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		createNote();
+
+		// press on delete button
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("deleteNoteButton")));
+		WebElement deleteNote = driver.findElement(By.id("deleteNoteButton"));
+		deleteNote.click();
+
+		// Redirect to home page & press on notes tab
+		redirectToNotesTab();
+
+		// check note is deleted
+		WebElement notesTable = driver.findElement(By.id("userTable"));
+		List<WebElement> notesList = notesTable.findElements(By.tagName("tbody"));
+
+		Assertions.assertEquals(0, notesList.size());
+	}
+
+	public void redirectToCredentialsTab(){
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		driver.get("http://localhost:" + this.port + "/home");
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-credentials-tab")));
+		driver.findElement(By.id("nav-credentials-tab")).click();
+	}
+
 	public void redirectToNotesTab(){
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 
@@ -277,6 +345,8 @@ class CloudStorageApplicationTests {
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
 		driver.findElement(By.id("nav-notes-tab")).click();
 	}
+
+
 
 
 

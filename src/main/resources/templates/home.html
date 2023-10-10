@@ -74,14 +74,14 @@
                             <th style="width: 60%" scope="col">Description</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr th:each="note: ${notes}">
+                        <tbody th:each="note: ${notes}" id="notes-body">
+                        <tr>
                             <td>
-                                <button name = "edit" th:onclick="javascript:showNoteModal([[${note}]])" type="button" class="btn btn-success">Edit</button>
-                                <a name = "delete" th:href="@{/notes/delete(id=${note.noteId})}" class="btn btn-danger">Delete</a>
+                                <button name = "edit" th:onclick="javascript:showNoteModal([[${note}]])" type="button" id="editNoteButton" class="btn btn-success">Edit</button>
+                                <a name = "delete" th:href="@{/notes/delete(id=${note.noteId})}" id="deleteNoteButton" class="btn btn-danger">Delete</a>
                             </td>
                             <th scope="row" id="note-title-data" th:text="${note.noteTitle}"></th>
-                            <td th:text="${note.noteDescription}"></td>
+                            <td id="note-description-field" th:text="${note.noteDescription}"></td>
                         </tr>
                         </tbody>
                     </table>
