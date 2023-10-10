@@ -11,10 +11,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.io.File;
 import java.util.List;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
 
@@ -136,7 +138,7 @@ class CloudStorageApplicationTests {
 	@Test
 	public void testRedirection() {
 		// Create a test account
-		doMockSignUp("Redirection","Test","RT","123");
+		doMockSignUp("test","test","test","test");
 		
 		// Check if we have been redirected to the log in page.
 		Assertions.assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
@@ -157,8 +159,8 @@ class CloudStorageApplicationTests {
 	@Test
 	public void testBadUrl() {
 		// Create a test account
-		doMockSignUp("URL","Test","UT","123");
-		doLogIn("UT", "123");
+		doMockSignUp("test","test","test","test");
+		doLogIn("test", "test");
 		
 		// Try to access a random made-up URL.
 		driver.get("http://localhost:" + this.port + "/some-random-page");
@@ -181,8 +183,8 @@ class CloudStorageApplicationTests {
 	@Test
 	public void testLargeUpload() {
 		// Create a test account
-		doMockSignUp("Large File","Test","LFT","123");
-		doLogIn("LFT", "123");
+		doMockSignUp("test","test","test","test");
+		doLogIn("test", "test");
 
 		// Try to upload an arbitrary large file
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
@@ -225,10 +227,10 @@ class CloudStorageApplicationTests {
 	@Test
 	public void createNote() throws InterruptedException {
 		// signup the user
-		doMockSignUp("Maia","Test","tester","123");
+		doMockSignUp("test","test","test","test");
 
 		// login the user
-		doLogIn("tester", "123");
+		doLogIn("test", "test");
 
 		// go to note-tab
 		WebElement notesTab= driver.findElement(By.id("nav-notes-tab"));
@@ -303,6 +305,10 @@ class CloudStorageApplicationTests {
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("userTable")));
 		Assertions.assertTrue(driver.findElement(By.id("note-description-field")).getText().contains("edited description"));
 
+		WebElement notesTable = driver.findElement(By.id("userTable"));
+		List<WebElement> notesList = notesTable.findElements(By.tagName("tbody"));
+
+		Assertions.assertEquals(1, notesList.size());
 //		Thread.sleep(3000);
 
 	}
@@ -351,10 +357,10 @@ class CloudStorageApplicationTests {
 	@Test
 	public void createCredential() throws InterruptedException {
 		// signup the user
-		doMockSignUp("Maia","Test","tester","123");
+		doMockSignUp("cred","cred","cred","cred");
 
 		// login the user
-		doLogIn("tester", "123");
+		doLogIn("cred", "cred");
 
 		// go to credentials-tab
 		WebElement credentialsTab= driver.findElement(By.id("nav-credentials-tab"));
@@ -372,7 +378,7 @@ class CloudStorageApplicationTests {
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
 		WebElement inputURL = driver.findElement(By.id("credential-url"));
 		inputURL.click();
-		inputURL.sendKeys("https://www.google.com/");
+		inputURL.sendKeys("https://www.test.com/");
 
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-username")));
 		WebElement inputUsername = driver.findElement(By.id("credential-username"));
@@ -422,7 +428,7 @@ class CloudStorageApplicationTests {
 		WebElement inputURL = driver.findElement(By.id("credential-url"));
 		inputURL.click();
 		inputURL.clear();
-		inputURL.sendKeys("https://github.com/MaiaDandachi");
+		inputURL.sendKeys("https://test.abc/test");
 
 		// get the unencrypted pwd
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-password")));
@@ -439,7 +445,7 @@ class CloudStorageApplicationTests {
 
 		// check changes
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credentialTable")));
-		Assertions.assertTrue(driver.findElement(By.id("table-cred-url")).getText().contains("https://github.com/MaiaDandachi"));
+		Assertions.assertTrue(driver.findElement(By.id("table-cred-url")).getText().contains("https://test.abc/test"));
 
 		// Verify that the viewable password is unencrypted
 		Assertions.assertNotEquals(driver.findElement(By.id("table-cred-password")).getText(), inputPassword);
