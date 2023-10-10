@@ -36,6 +36,7 @@ class CloudStorageApplicationTests {
 	@AfterEach
 	public void afterEach() {
 		if (this.driver != null) {
+			driver.close();
 			driver.quit();
 		}
 	}
@@ -328,6 +329,16 @@ class CloudStorageApplicationTests {
 		Assertions.assertEquals(0, notesList.size());
 	}
 
+	public void redirectToNotesTab(){
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		driver.get("http://localhost:" + this.port + "/home");
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+		driver.findElement(By.id("nav-notes-tab")).click();
+	}
+
+
 	public void redirectToCredentialsTab(){
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 
@@ -337,13 +348,127 @@ class CloudStorageApplicationTests {
 		driver.findElement(By.id("nav-credentials-tab")).click();
 	}
 
-	public void redirectToNotesTab(){
+	@Test
+	public void createCredential() throws InterruptedException {
+		// signup the user
+		doMockSignUp("Maia","Test","tester","123");
+
+		// login the user
+		doLogIn("tester", "123");
+
+		// go to credentials-tab
+		WebElement credentialsTab= driver.findElement(By.id("nav-credentials-tab"));
+		credentialsTab.click();
+
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		String inputCredentialPassword = "1234";
+
+		// press on add credentials button
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("newcred")));
+		WebElement addCredentialsButton= driver.findElement(By.id("newcred"));
+		addCredentialsButton.click();
+
+		// Fill out the credentials
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
+		WebElement inputURL = driver.findElement(By.id("credential-url"));
+		inputURL.click();
+		inputURL.sendKeys("https://www.google.com/");
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-username")));
+		WebElement inputUsername = driver.findElement(By.id("credential-username"));
+		inputUsername.click();
+		inputUsername.sendKeys("Maia");
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-password")));
+		WebElement inputPassword = driver.findElement(By.id("credential-password"));
+		inputPassword.click();
+		inputPassword.sendKeys(inputCredentialPassword);
+
+		// Attempt ot submit the credential
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("save-credential")));
+		WebElement submitNote = driver.findElement(By.id("save-credential"));
+		submitNote.click();
+
+		// Redirect to home page & press on credentials tab
+		redirectToCredentialsTab();
+
+		// Check if the credentials appears
+		WebElement credentialsTable = driver.findElement(By.id("credentialTable"));
+		List<WebElement> credList = credentialsTable.findElements(By.tagName("tbody"));
+
+		Assertions.assertEquals(1, credList.size());
+
+
+		// Check if the password shown in table is encrypted or not equal to the original password
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credentialTable")));
+		Assertions.assertNotEquals(driver.findElement(By.id("table-cred-password")).getText(), inputCredentialPassword);
+
+		Thread.sleep(3000);
+	}
+
+	@Test
+	public void editCredentials() throws InterruptedException {
+		createCredential();
+
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 
-		driver.get("http://localhost:" + this.port + "/home");
+		// press on edit
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editCredButton")));
+		WebElement editCredentialsButton= driver.findElement(By.id("editCredButton"));
+		editCredentialsButton.click();
 
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
-		driver.findElement(By.id("nav-notes-tab")).click();
+		// make changes
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
+		WebElement inputURL = driver.findElement(By.id("credential-url"));
+		inputURL.click();
+		inputURL.clear();
+		inputURL.sendKeys("https://github.com/MaiaDandachi");
+
+		// get the unencrypted pwd
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-password")));
+		String inputPassword = driver.findElement(By.id("credential-password")).getAttribute("value");
+
+
+		// Attempt ot submit the changes in the credential
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("save-credential")));
+		WebElement submitCredential = driver.findElement(By.id("save-credential"));
+		submitCredential.click();
+
+		// Redirect to home page & press on credentials tab
+		redirectToCredentialsTab();
+
+		// check changes
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credentialTable")));
+		Assertions.assertTrue(driver.findElement(By.id("table-cred-url")).getText().contains("https://github.com/MaiaDandachi"));
+
+		// Verify that the viewable password is unencrypted
+		Assertions.assertNotEquals(driver.findElement(By.id("table-cred-password")).getText(), inputPassword);
+
+		Thread.sleep(3000);
+
+	}
+
+	@Test
+	public void deleteCredentials() throws InterruptedException {
+		createCredential();
+
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		// press on edit
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("deleteCredButton")));
+		WebElement deleteCredentialsButton= driver.findElement(By.id("deleteCredButton"));
+		deleteCredentialsButton.click();
+
+		// Redirect to home page & press on credentials tab
+		redirectToCredentialsTab();
+
+		// check the credential is deleted
+		WebElement credentialTable = driver.findElement(By.id("credentialTable"));
+		List<WebElement> credList = credentialTable.findElements(By.tagName("tbody"));
+
+		Assertions.assertEquals(0, credList.size());
+
+		Thread.sleep(3000);
 	}
 
 

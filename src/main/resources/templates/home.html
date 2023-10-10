@@ -133,15 +133,15 @@
                             <th style="width: 25%" scope="col">Password</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr th:each="credential : ${credentials}">
+                        <tbody th:each="credential : ${credentials}">
+                        <tr>
                             <td>
-                                <button name="editCred" th:onclick="javascript:showCredentialModal([[${credential}]],this.getAttribute('decryptedPassword'))" th:decryptedPassword = "${encryptionService.decryptValue(credential.password, credential.key)}" type="button" class="btn btn-success">Edit</button>
-                                <a name="delete" th:href="@{/credentials/delete(id=${credential.credentialId})}" class="btn btn-danger">Delete</a>
+                                <button id="editCredButton" name="editCred" th:onclick="javascript:showCredentialModal([[${credential}]],this.getAttribute('decryptedPassword'))" th:decryptedPassword = "${encryptionService.decryptValue(credential.password, credential.key)}" type="button" class="btn btn-success">Edit</button>
+                                <a id="deleteCredButton" name="delete" th:href="@{/credentials/delete(id=${credential.credentialId})}" class="btn btn-danger">Delete</a>
                             </td>
-                            <th scope="row" th:text="${credential.url}"></th>
+                            <th id="table-cred-url" scope="row" th:text="${credential.url}"></th>
                             <td th:text="${credential.userName}"></td>
-                            <td th:text="${credential.password}"></td>
+                            <td id="table-cred-password" th:text="${credential.password}"></td>
                         </tr>
                         </tbody>
                     </table>
